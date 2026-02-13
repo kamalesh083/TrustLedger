@@ -1,74 +1,254 @@
-# React + TypeScript + Vite
+# 🔐 TrustLedger  
+### Blockchain-Based Content Verification System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TrustLedger is a decentralized web application that verifies the authenticity of digital files (PDFs, DOCX, Images, etc.) using blockchain technology.
 
-Currently, two official plugins are available:
+Instead of trusting a central authority, the system stores a cryptographic hash of a file on the blockchain. Any future upload can be verified against the immutable on-chain record.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚨 Problem Statement
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Digital files can be easily modified and redistributed as “original”.
 
-## Expanding the ESLint configuration
+There is:
+- No simple public verification system  
+- Heavy dependence on centralized authorities  
+- Risk of tampering without detection  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+We need a **trustless, transparent, and immutable** verification system.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 💡 Solution
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+TrustLedger:
+
+1. Hashes the file locally using SHA-256.
+2. Stores only the hash on the Ethereum blockchain.
+3. Allows anyone to verify authenticity later.
+
+If the hash matches → Authentic  
+If the hash differs → Tampered  
+
+---
+
+# 🔥 Features
+
+## 🔒 Strict Mode (Byte-Level Hashing)
+
+- Hashes raw file bytes
+- Even a 1-bit change produces a completely different hash
+- Best for exact file validation
+
+---
+
+## 📄 Content Mode (Text-Based Hashing)
+
+- Extracts readable content
+- Normalizes text
+- Hashes extracted content
+
+Use case:
+- Same document saved as PDF and DOCX
+- Content identical → Same content hash
+
+---
+
+## 📂 Supported File Types
+
+- PDF
+- DOCX
+- PNG / JPG
+- Any binary file (Strict Mode)
+
+---
+
+## ⛓ Blockchain Integration
+
+- Ethereum Sepolia Testnet
+- Smart contract-based hash storage
+- Immutable on-chain record
+- Wallet authentication via MetaMask
+
+---
+
+## 🦊 Wallet Integration
+
+- MetaMask support
+- Sepolia network detection
+- Automatic network switch
+- Secure contract interaction
+
+---
+
+## 📲 QR Code Verification (Optional / Future)
+
+- Generate QR containing hash + blockchain reference
+- Scan to verify authenticity
+- Useful for certificates, ID cards, legal documents
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+- React (Vite)
+- TypeScript
+- Tailwind CSS
+- Lucide Icons
+
+## Web3
+- wagmi
+- RainbowKit
+- ethers.js
+- Ethereum Sepolia
+
+## Cryptography
+- Web Crypto API (SHA-256)
+
+---
+
+# 🏗 System Architecture
+
+## Registration Flow
+
+User Upload  
+↓  
+Generate SHA-256 Hash (Local)  
+↓  
+Connect Wallet  
+↓  
+Store Hash in Smart Contract  
+↓  
+Blockchain Record Created  
+
+---
+
+## Verification Flow
+
+Upload File  
+↓  
+Generate Hash  
+↓  
+Fetch On-Chain Hash  
+↓  
+Compare  
+↓  
+Authentic / Tampered  
+
+---
+
+# 📂 Project Structure
+
+```
+src/
+ ├── components/
+ │    ├── UploadDropzone.tsx
+ │    ├── Navbar.tsx
+ │
+ ├── pages/
+ │    ├── RegisterPage.tsx
+ │    ├── VerifyPage.tsx
+ │
+ ├── lib/
+ │    ├── hashFile.ts
+ │    ├── contentHash.ts
+ │    ├── contract.ts
+ │
+ ├── App.tsx
+ └── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# ⚙️ Installation & Setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Clone Repository
+
+```bash
+git clone https://github.com/your-username/trustledger.git
+cd trustledger
 ```
-# TrustLedger
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Run Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+# ⛓ Smart Contract Setup
+
+1. Deploy contract on Sepolia
+2. Copy ABI
+3. Paste ABI into:
+
+```
+src/lib/contract.ts
+```
+
+4. Add deployed contract address
+5. Connect wallet
+
+---
+
+# 🔍 How Hashing Works
+
+```ts
+crypto.subtle.digest("SHA-256", fileBuffer)
+```
+
+Why SHA-256?
+
+- 256-bit fingerprint
+- Collision resistant
+- One-way function
+- Extremely sensitive to changes
+
+Even a single character modification produces a completely different hash.
+
+---
+
+# 🎯 Real-World Applications
+
+- University Certificates
+- Government Documents
+- Legal Contracts
+- Corporate Agreements
+- Media Authenticity Verification
+- Fake News Prevention
+
+---
+
+# 🔐 Security Design
+
+- Files are hashed locally
+- Files are NOT uploaded to blockchain
+- Only hash is stored
+- No centralized server required
+- Immutable verification
+
+---
+
+# 📈 Advantages
+
+- Decentralized
+- Immutable
+- Transparent
+- Trustless
+- Low gas usage
+- Privacy friendly
+
+---
+
+# 📜 License
+
+MIT License
